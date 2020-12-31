@@ -7,6 +7,9 @@ module.exports = {
       '@gasket/jest'
     ]
   },
+  docs: {
+    outputDir: './docs'
+  },
   swagger: {
     jsdoc: {
       definition: {

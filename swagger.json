@@ -19,9 +19,9 @@
         }
       }
     },
-    "/league": {
+    "/leagues": {
       "get": {
-        "summary": "Get Chumbo leagues",
+        "summary": "Get all Chumbo seasons",
         "tags": [
           "league"
         ],
@@ -56,7 +56,7 @@
     },
     "/league/{league_id}": {
       "get": {
-        "summary": "Get NFL league by league_id",
+        "summary": "Get single chumbo season",
         "tags": [
           "league"
         ],
@@ -66,7 +66,7 @@
             "name": "league_id",
             "schema": {
               "type": "string",
-              "example": 1387
+              "example": "chumbo_2012"
             }
           }
         ],
@@ -147,6 +147,193 @@
         "responses": {
           "200": {
             "description": "Returns player object.",
+            "content": "application/json"
+          }
+        }
+      }
+    },
+    "/league/{league_id}/rosters": {
+      "get": {
+        "summary": "Get Chumbo rosters for a league season",
+        "tags": [
+          "league",
+          "roster"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "league_id",
+            "schema": {
+              "type": "string",
+              "example": "chumbo_2012"
+            },
+            "description": "League ID"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns all rosters for a season",
+            "content": "application/json"
+          }
+        }
+      }
+    },
+    "/league/{league_id}/roster/{roster_id}": {
+      "get": {
+        "summary": "Get chumbo roster for a specific team",
+        "tags": [
+          "league",
+          "roster"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "league_id",
+            "schema": {
+              "type": "string",
+              "example": "chumbo_2012"
+            }
+          },
+          {
+            "in": "path",
+            "name": "roster_id",
+            "schema": {
+              "type": "string",
+              "example": 1
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns roster object for given roster.",
+            "content": "application/json"
+          }
+        }
+      }
+    },
+    "/owner/{owner_id}/rosters": {
+      "get": {
+        "summary": "Get chumbo rosters for a specific user",
+        "tags": [
+          "roster",
+          "owner"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "owner_id",
+            "schema": {
+              "type": "string",
+              "example": "chumbolegacy_euan"
+            },
+            "description": "The owner/user ID"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns rosters for given user.",
+            "content": "application/json"
+          }
+        }
+      }
+    },
+    "/league/{league_id}/owners": {
+      "get": {
+        "summary": "Get Chumbo users for a league season",
+        "tags": [
+          "league",
+          "owner"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "league_id",
+            "schema": {
+              "type": "string",
+              "example": "chumbo_2012"
+            },
+            "description": "League ID"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns all users for a season",
+            "content": "application/json"
+          }
+        }
+      }
+    },
+    "/league/{league_id}/owner/{owner_id}": {
+      "get": {
+        "summary": "Get chumbo user for a specific season",
+        "tags": [
+          "league",
+          "owner"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "league_id",
+            "schema": {
+              "type": "string",
+              "example": "chumbo_2012"
+            }
+          },
+          {
+            "in": "path",
+            "name": "owner_id",
+            "schema": {
+              "type": "string",
+              "example": "chumbolegacy_jimmie"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns owner object for given user.",
+            "content": "application/json"
+          }
+        }
+      }
+    },
+    "/owner/{owner_id}": {
+      "get": {
+        "summary": "Get all teams for a given user",
+        "tags": [
+          "owner"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "owner_id",
+            "schema": {
+              "type": "string",
+              "example": "chumbolegacy_euan"
+            },
+            "description": "The owner/user ID"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns users for given user.",
             "content": "application/json"
           }
         }

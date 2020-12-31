@@ -1,27 +1,12 @@
-const mongoose = require('mongoose');
 const League = require('../models/league');
-
-mongoose.connect('mongodb://localhost/chumbo', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-});
-
-const db = mongoose.connection;
-
-if (!db) {
-  console.error('Error connecting to db');
-} else {
-  console.info('Db connected successfully');
-}
 
 module.exports = (app) => {
   /**
   * @swagger
   *
-  * /league:
+  * /leagues:
   *   get:
-  *     summary: "Get Chumbo leagues"
+  *     summary: "Get all Chumbo seasons"
   *     tags:
   *       - league
   *     parameters:
@@ -74,7 +59,7 @@ module.exports = (app) => {
   *
   * /league/{league_id}:
   *   get:
-  *     summary: "Get NFL league by league_id"
+  *     summary: "Get single chumbo season"
   *     tags:
   *       - league
   *     parameters:
@@ -82,7 +67,7 @@ module.exports = (app) => {
   *         name: league_id
   *         schema:
   *           type: string
-  *           example: 1387
+  *           example: chumbo_2012
   *     produces:
   *       - "application/json"
   *     responses:
@@ -91,7 +76,7 @@ module.exports = (app) => {
   *         content:
   *           application/json
   */
-  app.get('/leagues/:league_id', async (req, res, next) => {
+  app.get('/league/:league_id', async (req, res, next) => {
     League.findOne({ league_id: req.params.league_id }, (err, league) => {
       if (err) {
         res.status(400).json({

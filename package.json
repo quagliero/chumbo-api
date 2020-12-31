@@ -5,13 +5,15 @@
   "scripts": {
     "build": "gasket build",
     "start": "gasket start",
-    "local": "gasket local",
+    "local": "nodemon --watch routes --exec gasket local",
     "test": "jest",
     "test:watch": "jest --watchAll",
     "test:coverage": "jest --coverage",
     "lint": "standard | snazzy",
     "lint:fix": "standard --fix | snazzy",
-    "scripts:players": "node scripts/players.js"
+    "scripts:players": "node scripts/players.js",
+    "scripts:leagues": "node scripts/leagues.js",
+    "scripts:rosters": "node scripts/rosters.js"
   },
   "dependencies": {
     "@gasket/cli": "^5.7.0",

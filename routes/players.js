@@ -1,19 +1,4 @@
-const mongoose = require('mongoose');
 const Player = require('../models/player');
-
-mongoose.connect('mongodb://localhost/chumbo', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-});
-
-const db = mongoose.connection;
-
-if (!db) {
-  console.error('Error connecting to db');
-} else {
-  console.info('Db connected successfully');
-}
 
 module.exports = (app) => {
   /**
