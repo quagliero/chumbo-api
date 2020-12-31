@@ -1,0 +1,161 @@
+{
+  "info": {
+    "title": "chumbo-api",
+    "version": "1.0.0"
+  },
+  "swagger": "2.0",
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Get default route",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns welcome message.",
+            "content": "application/json"
+          }
+        }
+      }
+    },
+    "/league": {
+      "get": {
+        "summary": "Get Chumbo leagues",
+        "tags": [
+          "league"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "league_id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Comma delimited list of league_ids"
+          },
+          {
+            "in": "query",
+            "name": "season",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Get the league(s) for the given season(s)"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns individual league or array of leagues",
+            "content": "application/json"
+          }
+        }
+      }
+    },
+    "/league/{league_id}": {
+      "get": {
+        "summary": "Get NFL league by league_id",
+        "tags": [
+          "league"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "league_id",
+            "schema": {
+              "type": "string",
+              "example": 1387
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns league object.",
+            "content": "application/json"
+          }
+        }
+      }
+    },
+    "/players": {
+      "get": {
+        "summary": "Get NFL players",
+        "tags": [
+          "players"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "player_id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Comma delimited list of player_ids"
+          },
+          {
+            "in": "query",
+            "name": "position",
+            "schema": {
+              "type": "string",
+              "example": 50
+            },
+            "description": "Comma delimited list of player positions"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Limit response to this many players"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns array of players",
+            "content": "application/json"
+          }
+        }
+      }
+    },
+    "/players/{player_id}": {
+      "get": {
+        "summary": "Get NFL player by player_id",
+        "tags": [
+          "players"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "player_id",
+            "schema": {
+              "type": "string",
+              "example": 1387
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns player object.",
+            "content": "application/json"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {},
+  "responses": {},
+  "parameters": {},
+  "securityDefinitions": {},
+  "tags": []
+}
