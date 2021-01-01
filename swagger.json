@@ -152,12 +152,29 @@
         }
       }
     },
-    "/league/{league_id}/rosters": {
+    "/teams": {
       "get": {
-        "summary": "Get Chumbo rosters for a league season",
+        "summary": "Get all Chumbo teams",
+        "tags": [
+          "team"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns every chumbo team (team)",
+            "content": "application/json"
+          }
+        }
+      }
+    },
+    "/league/{league_id}/teams": {
+      "get": {
+        "summary": "Get Chumbo teams for a league season",
         "tags": [
           "league",
-          "roster"
+          "team"
         ],
         "parameters": [
           {
@@ -175,18 +192,18 @@
         ],
         "responses": {
           "200": {
-            "description": "Returns all rosters for a season",
+            "description": "Returns all teams for a season",
             "content": "application/json"
           }
         }
       }
     },
-    "/league/{league_id}/roster/{roster_id}": {
+    "/league/{league_id}/team/{roster_id}": {
       "get": {
-        "summary": "Get chumbo roster for a specific team",
+        "summary": "Get information for a specific team in a season",
         "tags": [
           "league",
-          "roster"
+          "team"
         ],
         "parameters": [
           {
@@ -211,17 +228,17 @@
         ],
         "responses": {
           "200": {
-            "description": "Returns roster object for given roster.",
+            "description": "Returns team object for given team.",
             "content": "application/json"
           }
         }
       }
     },
-    "/owner/{owner_id}/rosters": {
+    "/owner/{owner_id}/teams": {
       "get": {
-        "summary": "Get chumbo rosters for a specific user",
+        "summary": "Get chumbo teams for a specific user",
         "tags": [
-          "roster",
+          "team",
           "owner"
         ],
         "parameters": [
@@ -240,7 +257,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Returns rosters for given user.",
+            "description": "Returns teams for given user.",
             "content": "application/json"
           }
         }
@@ -311,16 +328,16 @@
         }
       }
     },
-    "/owner/{owner_id}": {
+    "/user/{user_id}": {
       "get": {
-        "summary": "Get all teams for a given user",
+        "summary": "Get all chumbo seasons for a given user",
         "tags": [
-          "owner"
+          "user"
         ],
         "parameters": [
           {
             "in": "path",
-            "name": "owner_id",
+            "name": "user_id",
             "schema": {
               "type": "string",
               "example": "chumbolegacy_euan"

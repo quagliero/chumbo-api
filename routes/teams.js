@@ -1,15 +1,49 @@
-const Roster = require('../models/roster');
+/**
+ * A "Team" is just a roster with the starters and players arrays removed
+ */
+const Team = require('../models/roster');
+
+const fields = 'settings metadata league_id owner_id roster_id';
 
 module.exports = (app) => {
   /**
   * @swagger
   *
-  * /league/{league_id}/rosters:
+  * /teams:
   *   get:
-  *     summary: "Get Chumbo rosters for a league season"
+  *     summary: "Get all Chumbo teams"
+  *     tags:
+  *       - team
+  *     produces:
+  *       - "application/json"
+  *     responses:
+  *       "200":
+  *         description: "Returns every chumbo team (team)"
+  *         content:
+  *           application/json
+  */
+ app.get('/teams', async (req, res, next) => {
+  Team.find({}, fields, (err, teams) => {
+    if (err) {
+      res.status(400).json({
+        status: 'error',
+        message: err,
+      });
+    }
+
+    res.status(200).json(teams);
+  });
+});
+
+  /**
+  * @swagger
+  *
+  * /league/{league_id}/teams:
+  *   get:
+  *     summary: "Get Chumbo teams for a league season"
   *     tags:
   *       - league
-  *       - roster
+  *       - team
   *     parameters:
   *       - in: path
   *         name: league_id
@@ -21,14 +55,14 @@ module.exports = (app) => {
   *       - "application/json"
   *     responses:
   *       "200":
-  *         description: "Returns all rosters for a season"
+  *         description: "Returns all teams for a season"
   *         content:
   *           application/json
   */
-  app.get('/league/:league_id/rosters', async (req, res, next) => {
-    Roster.find({
+  app.get('/league/:league_id/teams', async (req, res, next) => {
+    Team.find({
       league_id: req.params.league_id,
-    }, (err, rosters) => {
+    }, fields, (err, teams) => {
       if (err) {
         res.status(400).json({
           status: 'error',
@@ -36,7 +70,7 @@ module.exports = (app) => {
         });
       }
 
-      res.status(200).json(rosters);
+      res.status(200).json(teams);
     });
   });
 
@@ -44,12 +78,12 @@ module.exports = (app) => {
   /**
   * @swagger
   *
-  * /league/{league_id}/roster/{roster_id}:
+  * /league/{league_id}/team/{roster_id}:
   *   get:
-  *     summary: "Get chumbo roster for a specific team"
+  *     summary: "Get information for a specific team in a season"
   *     tags:
   *       - league
-  *       - roster
+  *       - team
   *     parameters:
   *       - in: path
   *         name: league_id
@@ -65,15 +99,15 @@ module.exports = (app) => {
   *       - "application/json"
   *     responses:
   *       "200":
-  *         description: "Returns roster object for given roster."
+  *         description: "Returns team object for given team."
   *         content:
   *           application/json
   */
-  app.get('/league/:league_id/roster/:roster_id', async (req, res, next) => {
-    Roster.findOne({
+  app.get('/league/:league_id/team/:roster_id', async (req, res, next) => {
+    Team.findOne({
       league_id: req.params.league_id,
       roster_id: req.params.roster_id,
-    }, (err, roster) => {
+    }, fields, (err, team) => {
       if (err) {
         res.status(400).json({
           status: 'error',
@@ -81,18 +115,18 @@ module.exports = (app) => {
         }); 
       }
 
-      res.status(200).json(roster);
+      res.status(200).json(team);
     });
   });
 
   /**
   * @swagger
   *
-  * /owner/{owner_id}/rosters:
+  * /owner/{owner_id}/teams:
   *   get:
-  *     summary: "Get chumbo rosters for a specific user"
+  *     summary: "Get chumbo teams for a specific user"
   *     tags:
-  *       - roster
+  *       - team
   *       - owner
   *     parameters:
   *       - in: path
@@ -105,14 +139,14 @@ module.exports = (app) => {
   *       - "application/json"
   *     responses:
   *       "200":
-  *         description: "Returns rosters for given user."
+  *         description: "Returns teams for given user."
   *         content:
   *           application/json
   */
-  app.get('/owner/:owner_id/rosters', async (req, res, next) => {
-    Roster.find({
+  app.get('/owner/:owner_id/teams', async (req, res, next) => {
+    Team.find({
       owner_id: req.params.owner_id,
-    }, (err, roster) => {
+    }, fields, (err, team) => {
       if (err) {
         res.status(400).json({
           status: 'error',
@@ -120,7 +154,7 @@ module.exports = (app) => {
         }); 
       }
 
-      res.status(200).json(roster);
+      res.status(200).json(team);
     });
   });
 

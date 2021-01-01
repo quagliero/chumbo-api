@@ -1,4 +1,5 @@
 const fetch = require('node-fetch');
+const fs = require('fs');
 const mongoose = require('mongoose');
 const Player = require('../models/player');
 
@@ -33,6 +34,8 @@ const getPlayers = async function () {
   Player.insertMany(players, (err, doc) => {
     if (err) throw err;
     console.log(`${doc.length} players added to db`);
+    fs.writeFileSync('./data/players.json', JSON.stringify(players), 'utf-8');
     process.exit();
   });
+
 })();

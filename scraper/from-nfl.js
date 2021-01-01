@@ -2,12 +2,11 @@ const rp = require('request-promise');
 const pQueue = require('p-queue');
 const cheerio = require('cheerio');
 const ora = require('ora');
-const chalk = require('chalk');
+// const chalk = require('chalk');
 const r = require('ramda');
-const Table = require('tty-table');
-const cfonts = require('cfonts');
+// const Table = require('tty-table');
+// const cfonts = require('cfonts');
 const fs = require('fs');
-const { settings } = require('cluster');
 
 const spinner = ora();
 
@@ -388,10 +387,10 @@ const parseWeek = (year, week, teams = {}) => new Promise((resolve) => {
           });
           // got them all
           if (count === matchups.length * 2) {
-            fs.writeFile(`./raw_data/${year}/matchups/${week}.json`, JSON.stringify(sleeper, null, 2), 'utf-8', (err) => {
+            fs.writeFile(`../raw_data/${year}/matchups/${week}.json`, JSON.stringify(sleeper, null, 2), 'utf-8', (err) => {
               if (err) throw err;
             });
-            console.log(`${year} week ${week} matchups written to ./raw_data/${year}/matchups/${week}.json`);
+            console.log(`${year} week ${week} matchups written to ../raw_data/${year}/matchups/${week}.json`);
           }
         });
       })
@@ -1051,7 +1050,7 @@ const parsePicks = (year) => new Promise((resolve) => {
     fs.writeFileSync(`./raw_data/${year}/picks.json`, JSON.stringify(picks, null, 2), 'utf-8', (err) => {
       if (err) throw err;
     });
-    console.log(`${year} draft picks written to ./raw_data/${year}/picks.json`);
+    console.log(`${year} draft picks written to ../raw_data/${year}/picks.json`);
 
     resolve();
   });
@@ -1068,7 +1067,7 @@ const parseUsers = (year) => new Promise((resolve) => {
 
     const $owners = $('#leagueOwners .tableType-team > tbody > tr');
 
-    // Sol
+    // Sol (as he left and Phil came in)
     if (year === 2015) {
       users.push({
         user_id: managers[12].sleeper.id,
@@ -1080,7 +1079,7 @@ const parseUsers = (year) => new Promise((resolve) => {
       });
     }
 
-    // Phil
+    // Phil (as he left and Nick came in)
     if (year === 2016) {
       users.push({
         user_id: managers[14].sleeper.id,
@@ -1112,7 +1111,7 @@ const parseUsers = (year) => new Promise((resolve) => {
     fs.writeFileSync(`./raw_data/${year}/users.json`, JSON.stringify(users, null, 2), 'utf-8', (err) => {
       if (err) throw err;
     })
-    console.log(`${year} users written to ./raw_data/${year}/users.json`);
+    console.log(`${year} users written to ../raw_data/${year}/users.json`);
   });
 });
 
@@ -1124,6 +1123,7 @@ const parseRosters = (year) => new Promise(() => {
 
   for (let i = 1; i <= count; i ++) {
     rosters.push(
+      // the team is the one who started the year, they own the results
       new Promise((resolve) => parseTeamRoster(i, year, 16).then((roster) => {
         new Promise((resultResolve) => {
           rp(`${urlBase}/${year}/standings?historyStandingsType=regular`).then((html) => {
@@ -1133,7 +1133,7 @@ const parseRosters = (year) => new Promise(() => {
             const record = $team.find('.teamRecord').html().split('-')
             const points = $team.find('.teamPts').first().text().split('.');
             const points_against = $team.find('.teamPts.last').text().split('.');
-            const manager = getManager(year, 16, i);
+            const manager = getManager(year, 1, i);
 
             const owner_id = manager.sleeper.id;
             const roster_id = i;
@@ -1147,20 +1147,22 @@ const parseRosters = (year) => new Promise(() => {
             const metadata = {};
 
             // phil took over from Sol in 2015
-            if (year === 2015 && manager.id === 'phil') {
+            if (year === 2015 && manager.id === 'sol') {
               metadata.co_owner = {
-                owner_id: managers[12].sleeper.id, // sol
-                wins: 2,
-                losses: 6,
+                owner_id: managers[14].sleeper.id, // phil
+                week: 9,
+                wins: 0,
+                losses: 5,
               };
             }
 
             // Nick took over from Phil in 2016
-            if (year === 2016 && manager.id === 'nick') {
+            if (year === 2016 && manager.id === 'phil') {
               metadata.co_owner = {
-                owner_id: managers[14].sleeper.id, // phil
+                owner_id: managers[15].sleeper.id, // nick
+                week: 10,
                 wins: 3,
-                losses: 6,
+                losses: 1,
               };
             }
 
@@ -1224,11 +1226,11 @@ const parseRosters = (year) => new Promise(() => {
     fs.writeFileSync(`./raw_data/${year}/rosters.json`, JSON.stringify(data, null, 2), 'utf-8', (err) => {
         if (err) throw err;
       });
-      console.log(`${year} rosters written to ./raw_data/${year}/rosters.json`);
+      console.log(`${year} rosters written to ../raw_data/${year}/rosters.json`);
   });
 });
 
-// parseRosters(2012);
+// parseRosters(2016);
 
 const parseSettings = (year) => new Promise((resolve) => {
   rp(`${urlBase}/${year}/settings`).then((html) => {
@@ -1268,7 +1270,7 @@ const parseSettings = (year) => new Promise((resolve) => {
     fs.writeFileSync(`./raw_data/${year}/league.json`, JSON.stringify(league, null, 2), 'utf-8', (err) => {
       if (err) throw err;
     })
-    console.log(`${year} league settings written to ./raw_data/${year}/league.json`)
+    console.log(`${year} league settings written to ../raw_data/${year}/league.json`)
     resolve(league);
     
   });
@@ -1440,7 +1442,7 @@ const parseBracket = (year, consolation) => new Promise((resolve) => {
     fs.writeFileSync(`./raw_data/${year}/${fileName}.json`, JSON.stringify(bracket, null, 2), 'utf-8', (err) => {
       if (err) throw err;
     })
-    console.log(`${year} ${bracketType} bracket written to ./raw_data/${year}/${fileName}.json`);
+    console.log(`${year} ${bracketType} bracket written to ../raw_data/${year}/${fileName}.json`);
     resolve(bracket);
   });
 
@@ -1469,7 +1471,7 @@ const buildDraft = (year) => new Promise((resolve) => {
   fs.writeFileSync(`./raw_data/${year}/draft.json`, JSON.stringify(draft, null, 2), 'utf-8', (err) => {
     if (err) throw err;
   });
-  console.log(`${year} draft order written to ./raw_data/${year}/draft.json`);
+  console.log(`${year} draft order written to ../raw_data/${year}/draft.json`);
 
   resolve(draft);
 });
@@ -1492,10 +1494,8 @@ const buildRawDataForYear = (year) => {
   }
 
   Promise.all(promises).then(() => {
-    console.log(`Built raw data for ${year} in ./raw_data/${year}`);
+    console.log(`Built raw data for ${year} in ../raw_data/${year}`);
   })
 }
 
 // buildRawDataForYear(2019);
-
-parseRosters(2012);

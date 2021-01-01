@@ -88,14 +88,14 @@ module.exports = (app) => {
   /**
   * @swagger
   *
-  * /owner/{owner_id}:
+  * /user/{user_id}:
   *   get:
-  *     summary: "Get all teams for a given user"
+  *     summary: "Get all chumbo seasons for a given user"
   *     tags:
-  *       - owner
+  *       - user
   *     parameters:
   *       - in: path
-  *         name: owner_id
+  *         name: user_id
   *         schema:
   *           type: string
   *           example: chumbolegacy_euan
@@ -108,9 +108,9 @@ module.exports = (app) => {
   *         content:
   *           application/json
   */
-  app.get('/owner/:owner_id', async (req, res, next) => {
+  app.get('/user/:user_id', async (req, res, next) => {
     User.find({
-      user_id: req.params.owner_id,
+      user_id: req.params.user_id,
     }, (err, user) => {
       if (err) {
         res.status(400).json({

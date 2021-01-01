@@ -8,21 +8,21 @@
  *  - transactions
  */
 
-const league =  require('./data/2012/league.json');
-const playerData = require('./data/players.json');
+const league =  require('../data/2012/league.json');
+const playerData = require('../data/players.json');
 
 const { writeFileSync } = require('fs');
 
 const playerKeys = Object.keys(playerData);
 
 const getOwnerByRosterId = (year, rosterId) => {
-  const rosters = require(`./data/${year}/rosters.json`);
+  const rosters = require(`../data/${year}/rosters.json`);
 
   return rosters.find(x => x.roster_id === rosterId);
 }
 
 const getUserByOwnerId = (year, ownerId) => {
-  const users = require(`./data/${year}/users.json`);
+  const users = require(`../data/${year}/users.json`);
 
   return users.find(x => x.user_id === ownerId);
 }
@@ -30,7 +30,7 @@ const getUserByOwnerId = (year, ownerId) => {
 const getUserByRosterId = (year, rosterId) => getUserByOwnerId(getOwnerByRosterId(year, rosterId)?.owner_id);
 
 const getRosterByOwnerId = (year, ownerId) => {
-  const rosters = require(`./data/${year}/rosters.json`);
+  const rosters = require(`../data/${year}/rosters.json`);
   let owner = rosters.find(x => x.owner_id === ownerId);
 
   // check for co_owner
@@ -130,7 +130,7 @@ const getPlayerId = (name, position) => {
 
 // USERS
 const createUsersJson = (year) => {
-  const users = require(`./raw_data/${year}/users.json`);
+  const users = require(`../raw_data/${year}/users.json`);
 
   writeFileSync(`./data/${year}/users.json`, JSON.stringify(users), 'utf-8', (err) => {
     if (err) throw err;
@@ -140,7 +140,7 @@ const createUsersJson = (year) => {
 
 // ROSTERS
 const createRostersJson = (year) => {
-  const roster = require(`./raw_data/${year}/rosters.json`);
+  const roster = require(`../raw_data/${year}/rosters.json`);
 
   const formattedRoster = roster.map((team) => {
     const starters = [];
@@ -166,13 +166,14 @@ const createRostersJson = (year) => {
   console.log(`${year} rosters written to ./data/${year}/rosters.json`);
 }
 
+// createRostersJson(2015);
 
 // MATCHUPS
 const createMatchupsJson = (year, weeks) => 
   // Take scraped matchup data and replace player objects with player IDs
   weeks.forEach((week) => {
     try {
-      const matchups = require(`./raw_data/${year}/matchups/${week}.json`);
+      const matchups = require(`../raw_data/${year}/matchups/${week}.json`);
 
       const formattedMatchups = matchups.map((matchup) => {
         const starters = [];
@@ -203,10 +204,9 @@ const createMatchupsJson = (year, weeks) =>
     }
   });
 
-
 // PICKS
 const createPicksJson = (year) => {
-  const picks = require(`./raw_data/${year}/picks.json`);
+  const picks = require(`../raw_data/${year}/picks.json`);
 
   const formattedPicks = picks.map((p) => {
     const roster = getRosterByOwnerId(year, p.picked_by);
@@ -239,7 +239,7 @@ const createPicksJson = (year) => {
 // BRACKETS
 const createBracketsJson = (year, type = 'championship') => {
   const fileName = type === 'consolation' ? 'losers_bracket' : 'winners_bracket';
-  const bracket = require(`./raw_data/${year}/${fileName}.json`);
+  const bracket = require(`../raw_data/${year}/${fileName}.json`);
 
   const formattedBracket = bracket.map((b) => {
     const x = {
@@ -268,7 +268,7 @@ const createBracketsJson = (year, type = 'championship') => {
 
 // LEAGUE
 const createLeagueJson = (year) => {
-  const league = require(`./raw_data/${year}/league.json`);
+  const league = require(`../raw_data/${year}/league.json`);
   const formattedLeague = {
     status: 'post_season',
     sport: 'nfl',
@@ -390,7 +390,7 @@ const createLeagueJson = (year) => {
 
 // DRAFT
 const createDraftJson = (year) => {
-  const draft = require(`./raw_data/${year}/draft.json`);
+  const draft = require(`../raw_data/${year}/draft.json`);
   let draft_order = {};
   let slots_to_roster_id = {};
 
@@ -473,8 +473,7 @@ const formatNumber = (whole, decimal) => whole + (decimal / 100);
 const logRecords = (years) => {
   let table = [];
   years.forEach((year) => {
-    const y = require(`./data/${year}/rosters.json`);
-  
+    const y = require(`../data/${year}/rosters.json`);
   
     y.forEach((m) => {
       let team = table.find((z) => z.owner_id === m.owner_id);
@@ -485,17 +484,11 @@ const logRecords = (years) => {
         team.ties += m.settings.ties;
         team.fpts += formatNumber(m.settings.fpts, m.settings.fpts_decimal);
         team.fpts_against += formatNumber(m.settings.fpts_against, m.settings.fpts_against_decimal);
-
-        if (m.metadata.co_owner) {
-          console.log(m.metadata.co_owner);
-          team.losses -= m.metadata.co_owner.losses;
-          team.wins -= m.metadata.co_owner.wins;
-          team.ties -= m.metadata.co_owner.ties;
-        }
       } else {
         const user = getUserByOwnerId(year, m.owner_id);
+
         const data = {
-          tier: null,
+          // tier: null,
           owner_id: m.owner_id,
           name: user.display_name,
           wins: m.settings.wins,
@@ -508,15 +501,11 @@ const logRecords = (years) => {
           fpts_against_avg: null,
         };
 
-        if (m.metadata.co_owner) {
-          data.losses -= m.metadata.co_owner.losses;
-          data.wins -= m.metadata.co_owner.wins;
-          data.ties -= m.metadata.co_owner.ties || 0;
+        if (y.length === 1 && m.metadata.co_owner) {
+          data.name += ` (interim: ${m.metadata.co_owner.owner_id} from week ${m.metadata.co_owner.week})`;
         }
 
-        if (!user.user_id.includes('chumbolegacy')) {
-          table.push(data);
-        }
+        table.push(data);
       }
     });
   });
@@ -532,36 +521,37 @@ const logRecords = (years) => {
     });
   }).sort((a,b) => b.perc - a.perc || b.wins - a.wins || b.fpts - a.fpts);
   
-  const tierMap = (position) => {
-    if (position <= 3) {
-      return 1;
-    } else if (position <= 6) {
-      return 2;
-    } else if (position <= 9) {
-      return 3;
-    } else {
-      return 4;
-    }
-  };
+  console.table(sorted);
+  // const tierMap = (position) => {
+  //   if (position <= 3) {
+  //     return 1;
+  //   } else if (position <= 6) {
+  //     return 2;
+  //   } else if (position <= 9) {
+  //     return 3;
+  //   } else {
+  //     return 4;
+  //   }
+  // };
 
-  function arraymove(arr, fromIndex, toIndex) {
-    var element = arr[fromIndex];
-    arr.splice(fromIndex, 1);
-    arr.splice(toIndex, 0, element);
-  }
+  // function arraymove(arr, fromIndex, toIndex) {
+  //   var element = arr[fromIndex];
+  //   arr.splice(fromIndex, 1);
+  //   arr.splice(toIndex, 0, element);
+  // }
 
-  const scumboIndex = sorted.findIndex((x) => x.name === 'jmshelley');
+  // const scumboIndex = sorted.findIndex((x) => x.name === 'jmshelley');
 
-  arraymove(sorted, scumboIndex, sorted.length - 1);
+  // arraymove(sorted, scumboIndex, sorted.length - 1);
 
-  console.log(sorted.map((x, i) => {
-    return Object.assign(x, {
-      tier: tierMap(i + 1),
-    })
-  }))
+  // console.log(sorted.map((x, i) => {
+  //   return Object.assign(x, {
+  //     tier: tierMap(i + 1),
+  //   })
+  // }))
 }
 
-logRecords([ 2018, 2019, 2020 ]);
+// logRecords([ 2018,2019,2020 ]);
 
 const logWinnersBracket = (year) => {
   const winnersBracket = require(`./data/${year}/winners_bracket.json`);

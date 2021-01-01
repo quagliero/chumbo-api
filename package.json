@@ -13,7 +13,8 @@
     "lint:fix": "standard --fix | snazzy",
     "scripts:players": "node scripts/players.js",
     "scripts:leagues": "node scripts/leagues.js",
-    "scripts:rosters": "node scripts/rosters.js"
+    "scripts:rosters": "node scripts/rosters.js",
+    "scripts:users": "node scripts/users.js"
   },
   "dependencies": {
     "@gasket/cli": "^5.7.0",
@@ -25,9 +26,14 @@
     "mongoose": "^5.11.8"
   },
   "devDependencies": {
+    "cheerio": "^1.0.0-rc.5",
     "jest": "^24.8.0",
     "node-fetch": "^2.6.1",
     "nodemon": "^2.0.6",
+    "ora": "^3.4.0",
+    "p-queue": "^6.6.2",
+    "ramda": "^0.27.1",
+    "request-promise": "^4.2.6",
     "snazzy": "^9.0.0",
     "standard": "^16.0.3"
   },

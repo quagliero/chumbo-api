@@ -1,2 +1,4 @@
 node_modules
 raw_data
+backups/
+data/players.json
