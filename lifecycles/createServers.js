@@ -12,6 +12,14 @@ module.exports = async function createServers(gasket, serverOpts) {
   // set things unique for the local command
   const isLocal = gasket.command.id === 'local';
 
+  const port = isLocal ? 8080 : 3000;
+  const customOpts = {
+    http: {
+      ...serverOpts.http,
+      port,
+    },
+  }
+
   // connect to mongo db
   mongoose.connect('mongodb://localhost/chumbo', {
     useNewUrlParser: true,
@@ -26,5 +34,8 @@ module.exports = async function createServers(gasket, serverOpts) {
     console.error(err);
   });
 
-  return serverOpts;
+  return {
+    ...serverOpts,
+    ...customOpts,
+  };
 }
