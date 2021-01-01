@@ -1,4 +1,5 @@
 module.exports = {
+  http: 3000,
   plugins: {
     presets: [
       '@gasket/api'
