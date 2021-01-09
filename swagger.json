@@ -5,20 +5,6 @@
   },
   "swagger": "2.0",
   "paths": {
-    "/": {
-      "get": {
-        "summary": "Get default route",
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "Returns welcome message.",
-            "content": "application/json"
-          }
-        }
-      }
-    },
     "/leagues": {
       "get": {
         "summary": "Get all Chumbo seasons",

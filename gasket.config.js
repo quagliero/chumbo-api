@@ -12,6 +12,7 @@ module.exports = {
     outputDir: './docs'
   },
   swagger: {
+    apiDocsRoute: '/docs',
     jsdoc: {
       definition: {
         info: {
