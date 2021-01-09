@@ -1,5 +1,5 @@
 module.exports = (app) => {
   app.get('/', async (req, res, next) => {
-    res.redirect(301, '/api-docs');
+    res.redirect(301, '/docs');
   });
 }
