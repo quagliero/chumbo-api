@@ -1,5 +1,5 @@
 {
-  "basePath": "/api",
+  "basePath": "/api/v1",
   "info": {
     "title": "chumbo-api",
     "version": "1.0.0"

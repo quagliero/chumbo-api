@@ -11,11 +11,14 @@ module.exports = {
   docs: {
     outputDir: './docs'
   },
+  terminus: {
+    healthcheck: '/api/healthcheck'
+  },
   swagger: {
-    apiDocsRoute: '/docs',
+    apiDocsRoute: '/api/docs',
     jsdoc: {
       definition: {
-        basePath: '/api',
+        basePath: '/api/v1',
         info: {
           title: 'chumbo-api',
           version: '1.0.0'

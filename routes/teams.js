@@ -22,7 +22,7 @@ module.exports = (app) => {
   *         content:
   *           application/json
   */
- app.get('/api/teams', async (req, res, next) => {
+ app.get('/api/v1/teams', async (req, res, next) => {
   Team.find({}, fields, (err, teams) => {
     if (err) {
       res.status(400).json({
@@ -59,7 +59,7 @@ module.exports = (app) => {
   *         content:
   *           application/json
   */
-  app.get('/api/league/:league_id/teams', async (req, res, next) => {
+  app.get('/api/v1/league/:league_id/teams', async (req, res, next) => {
     Team.find({
       league_id: req.params.league_id,
     }, fields, (err, teams) => {
@@ -103,7 +103,7 @@ module.exports = (app) => {
   *         content:
   *           application/json
   */
-  app.get('/api/league/:league_id/team/:roster_id', async (req, res, next) => {
+  app.get('/api/v1/league/:league_id/team/:roster_id', async (req, res, next) => {
     Team.findOne({
       league_id: req.params.league_id,
       roster_id: req.params.roster_id,
@@ -143,7 +143,7 @@ module.exports = (app) => {
   *         content:
   *           application/json
   */
-  app.get('/api/owner/:owner_id/teams', async (req, res, next) => {
+  app.get('/api/v1/owner/:owner_id/teams', async (req, res, next) => {
     Team.find({
       owner_id: req.params.owner_id,
     }, fields, (err, team) => {

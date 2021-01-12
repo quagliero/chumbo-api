@@ -28,7 +28,7 @@ module.exports = (app) => {
   *         content:
   *           application/json
   */
-  app.get('/api/leagues', async (req, res, next) => {
+  app.get('/api/v1/leagues', async (req, res, next) => {
     const query = {};
     if (req.query.league_id) {
       query.league_id = {
@@ -76,7 +76,7 @@ module.exports = (app) => {
   *         content:
   *           application/json
   */
-  app.get('/api/league/:league_id', async (req, res, next) => {
+  app.get('/api/v1/league/:league_id', async (req, res, next) => {
     League.findOne({ league_id: req.params.league_id }, (err, league) => {
       if (err) {
         res.status(400).json({

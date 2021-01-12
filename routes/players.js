@@ -34,7 +34,7 @@ module.exports = (app) => {
   *         content:
   *           application/json
   */
-  app.get('/api/players', async (req, res, next) => {
+  app.get('/api/v1/players', async (req, res, next) => {
     const query = {};
     if (req.query.player_id) {
       query.player_id = {
@@ -82,7 +82,7 @@ module.exports = (app) => {
   *         content:
   *           application/json
   */
-  app.get('/api/players/:player_id', async (req, res, next) => {
+  app.get('/api/v1/players/:player_id', async (req, res, next) => {
     Player.findOne({ player_id: req.params.player_id }, (err, player) => {
       if (err) {
         res.status(400).json({
