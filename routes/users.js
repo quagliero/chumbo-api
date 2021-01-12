@@ -25,7 +25,7 @@ module.exports = (app) => {
   *         content:
   *           application/json
   */
-  app.get('/league/:league_id/owners', async (req, res, next) => {
+  app.get('/api/league/:league_id/owners', async (req, res, next) => {
     User.find({
       league_id: req.params.league_id,
     }, (err, users) => {
@@ -69,7 +69,7 @@ module.exports = (app) => {
   *         content:
   *           application/json
   */
-  app.get('/league/:league_id/owner/:owner_id', async (req, res, next) => {
+  app.get('/api/league/:league_id/owner/:owner_id', async (req, res, next) => {
     User.findOne({
       league_id: req.params.league_id,
       user_id: req.params.owner_id,
@@ -108,7 +108,7 @@ module.exports = (app) => {
   *         content:
   *           application/json
   */
-  app.get('/user/:user_id', async (req, res, next) => {
+  app.get('/api/user/:user_id', async (req, res, next) => {
     User.find({
       user_id: req.params.user_id,
     }, (err, user) => {

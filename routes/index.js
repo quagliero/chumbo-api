@@ -1,5 +1,5 @@
 module.exports = (app) => {
   app.get('/', async (req, res, next) => {
-    res.redirect(301, '/docs');
+    res.send('Welcome to the Chumbo API: <a href="/docs">docs</a> | <a href="/healthcheck">healthcheck</a>.');
   });
 }

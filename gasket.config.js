@@ -15,6 +15,7 @@ module.exports = {
     apiDocsRoute: '/docs',
     jsdoc: {
       definition: {
+        basePath: '/api',
         info: {
           title: 'chumbo-api',
           version: '1.0.0'
