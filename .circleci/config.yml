@@ -1,0 +1,76 @@
+version: 2.1
+
+executors:
+  my-executor:
+    docker:
+      - image: circleci/node:14
+    working_directory: /tmp
+
+jobs:
+  build:
+    executor: my-executor
+
+    working_directory: ~/r
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run: npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      # run tests!
+      # - run: npm test
+      - run: NODE_ENV=production npm run build
+      - run: npm prune --production
+      - persist_to_workspace:
+          root: "~"
+          paths:
+            # What the app needs to run
+            - r/routes
+            - r/models
+            - r/lifecycles
+            - r/plugins
+            - r/node_modules
+            - r/swagger.json
+            - r/package.json
+            - r/package-lock.json
+            - r/gasket.config.js
+  deploy:
+    executor: my-executor
+    steps:
+      - attach_workspace:
+          at: ./
+      - run: mkdir ~/.ssh
+      - run: ssh-keyscan $IP >> ~/.ssh/known_hosts
+      - run: sudo apt install rsync
+      - run:
+          name: Deploy Over SSH
+          command: |
+            rsync -avz -e "ssh" --progress --delete-before ./r/ $USER@$IP:/var/www/chumbo.ml/api/
+      - run:
+          name: Restart process
+          command: |
+            ssh $USER@$IP 'pm2 restart chumbo-api'
+
+workflows:
+  version: 2.1
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
