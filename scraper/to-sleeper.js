@@ -10,6 +10,7 @@
 
 const league =  require('../data/2012/league.json');
 const playerData = require('../data/players.json');
+const managers = require('./managers.json');
 
 const { writeFileSync } = require('fs');
 
@@ -551,7 +552,6 @@ const logRecords = (years) => {
   // }))
 }
 
-// logRecords([ 2018,2019,2020 ]);
 
 const logWinnersBracket = (year) => {
   const winnersBracket = require(`./data/${year}/winners_bracket.json`);
@@ -591,3 +591,144 @@ const logWeeklyMatchups = (years, weeks) =>
       })
     })
   });
+
+  
+const getSleeperId = (name) => managers.find((m) => m.id.toLowerCase() === name.toLowerCase()).sleeper.id;
+
+const ALL_YEARS = [ 2012,2013,2014,2015,2016,2017,2018,2019,2020, 2021 ];
+
+const FOURTEEN_GAMES = [1,2,3,4,5,6,7,8,9,10,11,12,13,14];
+const THIRTEEN_GAMES = [1,2,3,4,5,6,7,8,9,10,11,12,13];
+
+const logHeadToHead = (a, b) => {
+  const ownerIdA = getSleeperId(a);
+  const ownerIdB = getSleeperId(b);
+  const results = [];
+  ALL_YEARS.forEach((y) => {
+    const rosters = require(`../data/${y}/rosters.json`);
+    const rosterIdA = rosters.find((r) => r.owner_id === ownerIdA)?.roster_id;
+    const rosterIdB = rosters.find((r) => r.owner_id === ownerIdB)?.roster_id;
+
+    if (rosterIdA == null && rosterIdB == null) {
+      return;
+    }
+
+    const weeks = y <= 2013 ? FOURTEEN_GAMES : THIRTEEN_GAMES;
+    
+    weeks.forEach((w) => {
+      let matchups;
+      try {
+        matchups = require(`../data/${y}/matchups/${w}.json`);
+      } catch {
+        return;
+      }
+      let matchupA;
+      let matchupB;
+      matchups.forEach((m) => {
+        if (matchupA != null && matchupB != null) {
+          return;
+        }
+
+        if (m.roster_id === rosterIdA) {
+          matchupA = m;
+        }
+
+        if (m.roster_id === rosterIdB) {
+          matchupB = m;
+        }
+      });
+
+      if (matchupA && matchupB && matchupA.matchup_id === matchupB.matchup_id) {
+        // our teams played this week
+        results.push({
+          year: y,
+          week: w,
+          teamA: {
+            username: a,
+            owner_id: ownerIdA,
+            matchup: matchupA,
+          },
+          teamB: {
+            username: b,
+            owner_id: ownerIdB,
+            matchup: matchupB,
+          },
+        });
+      }
+
+    });
+  });
+
+
+  console.log(`${a} vs ${b} - ${results.length} games`);
+  const totals = {
+    [a]: 0,
+    [b]: 0,
+    tie: 0,
+  };
+  results.map((r, i) => {
+    if (r.teamA.matchup.points > r.teamB.matchup.points) {
+      // a won
+      totals[a] = totals[a] + 1;
+    } else if (r.teamB.matchup.points > r.teamA.matchup.points) {
+      // b won
+      totals[b] = totals[b] + 1;
+    } else {
+      // draw
+      totals.tie = totals[tie] + 1;
+    }
+    console.log(`Matchup ${i + 1} (${r.year} week ${r.week}): ${r.teamA.username} ${r.teamA.matchup.points.toFixed(2)} - ${r.teamB.matchup.points.toFixed(2)} ${r.teamB.username}`);
+  });
+  console.log(`ALL TIME H2H: ${a} ${totals[a]} - ${totals[b]} ${b} ${totals.tie ? `(${totals.tie} tie)` : ''}`);
+  // console.table(resultsData);
+}
+
+
+logHeadToHead('thd', 'fin');
+// console.log('\n');
+// logHeadToHead('thd', 'rich');
+// console.log('\n');
+// logHeadToHead('jay', 'fin');
+// console.log('\n');
+// logHeadToHead('htc', 'nick');
+// console.log('\n');
+// logHeadToHead('hadkiss', 'ryan');
+// console.log('\n');
+// logHeadToHead('ant', 'kitch');
+// logRecords([2019, 2020, 2021]);
+// logRecords(ALL_YEARS);
+const getUserPlayers = (user) => {
+  const ownerId = getSleeperId(user);
+  const starters = [];
+  const starterCounts = {};
+
+  ALL_YEARS.forEach((y) => {    
+    const rosters = require(`../data/${y}/rosters.json`);
+    const rosterId = rosters.find((r) => r.owner_id === ownerId)?.roster_id;
+
+    const weeks = y <= 2013 ? FOURTEEN_GAMES : THIRTEEN_GAMES;
+    weeks.forEach((w) => {
+      let matchups;
+      try {
+        matchups = require(`../data/${y}/matchups/${w}.json`);
+      } catch {
+        return;
+      }
+      
+      matchups.forEach((m) => {
+        if (m.roster_id === rosterId) {
+          starters.push(...m.starters);
+        }
+      });
+    });
+  });
+
+  starters.forEach((s) => {
+    const player = playerData?.[s]?.full_name ? playerData[s].full_name : s;
+    starterCounts[player] = starterCounts[player] ? starterCounts[player] + 1 : 1;
+  });
+
+  console.log(Object.fromEntries(Object.entries(starterCounts).sort((a, b) => b[1] - a[1]).slice(0, 15)));
+}
+
+// getUserPlayers('sol');
