@@ -11,6 +11,7 @@
 const league =  require('../data/2012/league.json');
 const playerData = require('../data/players.json');
 const managers = require('./managers.json');
+const { printTable, Table } = require('console-table-printer');
 
 const { writeFileSync } = require('fs');
 
@@ -471,7 +472,7 @@ const createJsonForYear = (year) => {
 
 const formatNumber = (whole, decimal) => whole + (decimal / 100);
 
-const logRecords = (years) => {
+const logRecords = (years, tiers = false) => {
   let table = [];
   years.forEach((year) => {
     const y = require(`../data/${year}/rosters.json`);
@@ -522,7 +523,18 @@ const logRecords = (years) => {
     });
   }).sort((a,b) => b.perc - a.perc || b.wins - a.wins || b.fpts - a.fpts);
   
-  console.table(sorted);
+  const t = new Table({
+    title: tiers ? `Chumbo Tiers for ${years.join(', ')}` : 'Chumbo All-Time Records',
+  });
+  if (tiers) {
+    t.addRows(sorted.slice(0, 3), { color: 'green' });
+    t.addRows(sorted.slice(3, 6), { color: 'blue' });
+    t.addRows(sorted.slice(6, 9), { color: 'yellow' });
+    t.addRows(sorted.slice(9, 12), { color: 'red' });
+  } else {
+    t.addRows(sorted);
+  }
+  t.printTable();
   // const tierMap = (position) => {
   //   if (position <= 3) {
   //     return 1;
@@ -684,18 +696,18 @@ const logHeadToHead = (a, b) => {
 }
 
 
-logHeadToHead('thd', 'fin');
-// console.log('\n');
-// logHeadToHead('thd', 'rich');
-// console.log('\n');
-// logHeadToHead('jay', 'fin');
-// console.log('\n');
-// logHeadToHead('htc', 'nick');
-// console.log('\n');
-// logHeadToHead('hadkiss', 'ryan');
-// console.log('\n');
-// logHeadToHead('ant', 'kitch');
-// logRecords([2019, 2020, 2021]);
+logHeadToHead('thd', 'jay');
+console.log('\n');
+logHeadToHead('sol', 'ant');
+console.log('\n');
+logHeadToHead('hadkiss', 'rich');
+console.log('\n');
+logHeadToHead('htc', 'dix');
+console.log('\n');
+logHeadToHead('ryan', 'nick');
+console.log('\n');
+logHeadToHead('kitch', 'fin');
+// logRecords([2020, 2021], true);
 // logRecords(ALL_YEARS);
 const getUserPlayers = (user) => {
   const ownerId = getSleeperId(user);

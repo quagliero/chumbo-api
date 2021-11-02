@@ -1847,6 +1847,13 @@ connected@~0.0.2:
   resolved "https://registry.yarnpkg.com/connected/-/connected-0.0.2.tgz#7b5755b216ce31ffabccc38e9f4e1dfc1c3b7c6d"
   integrity sha1-e1dVshbOMf+rzMOOn04d/Bw7fG0=
 
+console-table-printer@^2.10.0:
+  version "2.10.0"
+  resolved "https://registry.yarnpkg.com/console-table-printer/-/console-table-printer-2.10.0.tgz#4a6875b95071b36542d1c55c6d9dcc6206e1e9f0"
+  integrity sha512-7pTsysaJs1+R+OO4cCtJbl+Lr4piHYIhi7/V1qHbOg/uiYgq2yUINFgvXZtVHqm9qpW0+Uk190qkGcKvzdunvg==
+  dependencies:
+    simple-wcswidth "^1.0.1"
+
 contains-path@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/contains-path/-/contains-path-0.1.0.tgz#fe8cf184ff6670b6baef01a9d4861a5cbec4120a"
@@ -6218,6 +6225,11 @@ simple-swizzle@^0.2.2:
   integrity sha1-pNprY1/8zMoz9w0Xy5JZLeleVXo=
   dependencies:
     is-arrayish "^0.3.1"
+
+simple-wcswidth@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/simple-wcswidth/-/simple-wcswidth-1.0.1.tgz#8ab18ac0ae342f9d9b629604e54d2aa1ecb018b2"
+  integrity sha512-xMO/8eNREtaROt7tJvWJqHBDTMFN4eiQ5I4JRMuilwfnFcV5W9u7RUkueNkdw0jPqGMX36iCywelS5yilTuOxg==
 
 sisteransi@^1.0.5:
   version "1.0.5"

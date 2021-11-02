@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "cheerio": "^1.0.0-rc.5",
+    "console-table-printer": "^2.10.0",
     "jest": "^24.8.0",
     "node-fetch": "^2.6.1",
     "nodemon": "^2.0.6",
