@@ -507,7 +507,7 @@ const createJsonForYear = (year) => {
 
 // LOGGING PLAYGROUND
 
-const formatNumber = (whole, decimal) => whole + decimal / 100;
+const formatNumber = (whole = 0, decimal = 0) => whole + decimal / 100;
 
 const logRecords = (years, tiers = false) => {
   let table = [];
@@ -516,6 +516,7 @@ const logRecords = (years, tiers = false) => {
 
     y.forEach((m) => {
       let team = table.find((z) => z.owner_id === m.owner_id);
+      const manager = managers.find((x) => x.sleeper.id === m.owner_id);
 
       if (team) {
         team.wins += m.settings.wins;
@@ -528,7 +529,7 @@ const logRecords = (years, tiers = false) => {
         );
       } else {
         const user = getUserByOwnerId(year, m.owner_id);
-
+        console.log(m);
         const data = {
           // tier: null,
           owner_id: m.owner_id,
@@ -544,6 +545,13 @@ const logRecords = (years, tiers = false) => {
             m.settings.fpts_against_decimal
           ),
           fpts_against_avg: null,
+          trophies: `${new Array(manager?.crowns || 0)
+            .fill(null)
+            .map(() => "🏆")
+            .join("")} ${new Array(manager?.scoringCrowns || 0)
+            .fill(null)
+            .map(() => "🎯")
+            .join("")}`,
         };
 
         if (y.length === 1 && m.metadata.co_owner) {
@@ -570,9 +578,11 @@ const logRecords = (years, tiers = false) => {
           x.fpts_against /
           (x.wins + x.losses + x.ties)
         ).toFixed(2),
+        trophies: x.trophies,
       });
     })
     .sort((a, b) => b.perc - a.perc || b.wins - a.wins || b.fpts - a.fpts);
+  // .filter((x) => x.name !== "DontPanic22");
 
   // sorted.push(sorted.shift());
 
@@ -675,7 +685,9 @@ const logWeeklyMatchups = (years, weeks) =>
 const getSleeperId = (name) =>
   managers.find((m) => m.id.toLowerCase() === name.toLowerCase()).sleeper.id;
 
-const ALL_YEARS = [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021];
+const ALL_YEARS = [
+  2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022,
+];
 
 const FOURTEEN_GAMES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
 const THIRTEEN_GAMES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
@@ -738,7 +750,7 @@ const logHeadToHead = (a, b) => {
     });
   });
 
-  console.log(`${a} vs ${b} - ${results.length} games`);
+  console.log(`${a} vs ${b} - ${results.length} games` + "\n");
   const totals = {
     [a]: 0,
     [b]: 0,
@@ -764,26 +776,30 @@ const logHeadToHead = (a, b) => {
     );
   });
   console.log(
-    `ALL TIME H2H: ${a} ${totals[a]} - ${totals[b]} ${b} ${
-      totals.tie ? `(${totals.tie} tie)` : ""
-    }`
+    "\n" +
+      `ALL TIME H2H: ${a} ${totals[a]} - ${totals[b]} ${b} ${
+        totals.tie ? `(${totals.tie} tie)` : ""
+      }` +
+      "\n"
   );
   // console.table(resultsData);
 };
 
-// logHeadToHead('thd', 'nick');
+// logHeadToHead("thd", "htc");
 // console.log('\n');
-// logHeadToHead('ryan', 'sol');
+// logHeadToHead("hadkiss", "kitch");
 // console.log('\n');
-// logHeadToHead('ant', 'rich');
+// logHeadToHead("jay", "ryan");
 // console.log('\n');
-// logHeadToHead('jay', 'kitch');
+// logHeadToHead("ant", "brock");
 // console.log('\n');
-// logHeadToHead('htc', 'fin');
+// logHeadToHead("sol", "fin");
 // console.log('\n');
-// logHeadToHead('hadkiss', 'dix');
-// logRecords([2019, 2020, 2021], true);
-logRecords([2021]);
+// logHeadToHead("dix", "rich");
+
+// logRecords([2020, 2021], true);
+logRecords([2022]);
+
 const getUserPlayers = (user) => {
   const ownerId = getSleeperId(user);
   const starters = [];

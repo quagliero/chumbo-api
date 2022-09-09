@@ -9,9 +9,7 @@
     "/leagues": {
       "get": {
         "summary": "Get all Chumbo seasons",
-        "tags": [
-          "league"
-        ],
+        "tags": ["league"],
         "parameters": [
           {
             "in": "query",
@@ -30,9 +28,7 @@
             "description": "Get the league(s) for the given season(s)"
           }
         ],
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "responses": {
           "200": {
             "description": "Returns individual league or array of leagues",
@@ -44,9 +40,7 @@
     "/league/{league_id}": {
       "get": {
         "summary": "Get single chumbo season",
-        "tags": [
-          "league"
-        ],
+        "tags": ["league"],
         "parameters": [
           {
             "in": "path",
@@ -57,9 +51,7 @@
             }
           }
         ],
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "responses": {
           "200": {
             "description": "Returns league object.",
@@ -71,9 +63,7 @@
     "/players": {
       "get": {
         "summary": "Get NFL players",
-        "tags": [
-          "players"
-        ],
+        "tags": ["players"],
         "parameters": [
           {
             "in": "query",
@@ -101,9 +91,7 @@
             "description": "Limit response to this many players"
           }
         ],
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "responses": {
           "200": {
             "description": "Returns array of players",
@@ -115,9 +103,7 @@
     "/players/{player_id}": {
       "get": {
         "summary": "Get NFL player by player_id",
-        "tags": [
-          "players"
-        ],
+        "tags": ["players"],
         "parameters": [
           {
             "in": "path",
@@ -128,9 +114,7 @@
             }
           }
         ],
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "responses": {
           "200": {
             "description": "Returns player object.",
@@ -142,12 +126,8 @@
     "/teams": {
       "get": {
         "summary": "Get all Chumbo teams",
-        "tags": [
-          "team"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "tags": ["team"],
+        "produces": ["application/json"],
         "responses": {
           "200": {
             "description": "Returns every chumbo team (team)",
@@ -159,10 +139,7 @@
     "/league/{league_id}/teams": {
       "get": {
         "summary": "Get Chumbo teams for a league season",
-        "tags": [
-          "league",
-          "team"
-        ],
+        "tags": ["league", "team"],
         "parameters": [
           {
             "in": "path",
@@ -174,9 +151,7 @@
             "description": "League ID"
           }
         ],
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "responses": {
           "200": {
             "description": "Returns all teams for a season",
@@ -188,10 +163,7 @@
     "/league/{league_id}/team/{roster_id}": {
       "get": {
         "summary": "Get information for a specific team in a season",
-        "tags": [
-          "league",
-          "team"
-        ],
+        "tags": ["league", "team"],
         "parameters": [
           {
             "in": "path",
@@ -210,9 +182,7 @@
             }
           }
         ],
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "responses": {
           "200": {
             "description": "Returns team object for given team.",
@@ -224,24 +194,19 @@
     "/owner/{owner_id}/teams": {
       "get": {
         "summary": "Get chumbo teams for a specific user",
-        "tags": [
-          "team",
-          "owner"
-        ],
+        "tags": ["team", "owner"],
         "parameters": [
           {
             "in": "path",
             "name": "owner_id",
             "schema": {
               "type": "string",
-              "example": "chumbolegacy_euan"
+              "example": "704708035829895168"
             },
             "description": "The owner/user ID"
           }
         ],
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "responses": {
           "200": {
             "description": "Returns teams for given user.",
@@ -253,10 +218,7 @@
     "/league/{league_id}/owners": {
       "get": {
         "summary": "Get Chumbo users for a league season",
-        "tags": [
-          "league",
-          "owner"
-        ],
+        "tags": ["league", "owner"],
         "parameters": [
           {
             "in": "path",
@@ -268,9 +230,7 @@
             "description": "League ID"
           }
         ],
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "responses": {
           "200": {
             "description": "Returns all users for a season",
@@ -282,10 +242,7 @@
     "/league/{league_id}/owner/{owner_id}": {
       "get": {
         "summary": "Get chumbo user for a specific season",
-        "tags": [
-          "league",
-          "owner"
-        ],
+        "tags": ["league", "owner"],
         "parameters": [
           {
             "in": "path",
@@ -304,9 +261,7 @@
             }
           }
         ],
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "responses": {
           "200": {
             "description": "Returns owner object for given user.",
@@ -318,23 +273,19 @@
     "/user/{user_id}": {
       "get": {
         "summary": "Get all chumbo seasons for a given user",
-        "tags": [
-          "user"
-        ],
+        "tags": ["user"],
         "parameters": [
           {
             "in": "path",
             "name": "user_id",
             "schema": {
               "type": "string",
-              "example": "chumbolegacy_euan"
+              "example": "704708035829895168"
             },
             "description": "The owner/user ID"
           }
         ],
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "responses": {
           "200": {
             "description": "Returns users for given user.",
