@@ -3,8 +3,6 @@
  * script writes and turns it into sleeper friendly JSON
  *
  * TODO:
- *  - winners bracket
- *  - losers bracket
  *  - transactions
  */
 
@@ -529,7 +527,6 @@ const logRecords = (years, tiers = false) => {
         );
       } else {
         const user = getUserByOwnerId(year, m.owner_id);
-        console.log(m);
         const data = {
           // tier: null,
           owner_id: m.owner_id,
@@ -563,7 +560,7 @@ const logRecords = (years, tiers = false) => {
     });
   });
 
-  const sorted = table
+  let sorted = table
     .map((x, i) => {
       delete x.owner_id;
       return Object.assign(x, {
@@ -581,10 +578,17 @@ const logRecords = (years, tiers = false) => {
         trophies: x.trophies,
       });
     })
-    .sort((a, b) => b.perc - a.perc || b.wins - a.wins || b.fpts - a.fpts);
-  // .filter((x) => x.name !== "DontPanic22");
+    .sort((a, b) => b.perc - a.perc || b.wins - a.wins || b.fpts - a.fpts)
+    // wadlow not in the tiers
+    .filter((x) => (tiers ? x.name !== "DontPanic22" : true));
 
-  // sorted.push(sorted.shift());
+  // brock last in the tiers
+  // if (tiers) {
+  //   const brockIdx = sorted.findIndex((x) => x.name === "brocky306");
+
+  //   const brocky = sorted.splice(brockIdx, 1);
+  //   sorted = sorted.concat(brocky);
+  // }
 
   const t = new Table({
     title: tiers
@@ -785,20 +789,20 @@ const logHeadToHead = (a, b) => {
   // console.table(resultsData);
 };
 
-// logHeadToHead("thd", "htc");
-// console.log('\n');
-// logHeadToHead("hadkiss", "kitch");
-// console.log('\n');
-// logHeadToHead("jay", "ryan");
-// console.log('\n');
-// logHeadToHead("ant", "brock");
-// console.log('\n');
-// logHeadToHead("sol", "fin");
-// console.log('\n');
-// logHeadToHead("dix", "rich");
+// logHeadToHead("thd", "ryan");
+// console.log("\n");
+// logHeadToHead("jay", "htc");
+// console.log("\n");
+// logHeadToHead("hadkiss", "fin");
+// console.log("\n");
+// logHeadToHead("sol", "kitch");
+// console.log("\n");
+// logHeadToHead("ant", "rich");
+// console.log("\n");
+// logHeadToHead("dix", "brock");
 
-// logRecords([2020, 2021], true);
-logRecords([2022]);
+logRecords(ALL_YEARS);
+// logRecords([2020,2021,2022], true);
 
 const getUserPlayers = (user) => {
   const ownerId = getSleeperId(user);
@@ -837,9 +841,9 @@ const getUserPlayers = (user) => {
     Object.fromEntries(
       Object.entries(starterCounts)
         .sort((a, b) => b[1] - a[1])
-        .slice(0, 15)
+        .slice(0, 20)
     )
   );
 };
 
-// getUserPlayers('sol');
+// getUserPlayers("htc");
