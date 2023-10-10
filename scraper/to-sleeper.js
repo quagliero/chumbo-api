@@ -690,7 +690,7 @@ const getSleeperId = (name) =>
   managers.find((m) => m.id.toLowerCase() === name.toLowerCase()).sleeper.id;
 
 const ALL_YEARS = [
-  2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022,
+  2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023,
 ];
 
 const FOURTEEN_GAMES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
@@ -789,20 +789,20 @@ const logHeadToHead = (a, b) => {
   // console.table(resultsData);
 };
 
-// logHeadToHead("thd", "ryan");
+// logHeadToHead("thd", "fin");
 // console.log("\n");
-// logHeadToHead("jay", "htc");
+// logHeadToHead("jay", "rich");
 // console.log("\n");
-// logHeadToHead("hadkiss", "fin");
+// logHeadToHead("hadkiss", "dix");
 // console.log("\n");
-// logHeadToHead("sol", "kitch");
+// logHeadToHead("htc", "sol");
 // console.log("\n");
-// logHeadToHead("ant", "rich");
+// logHeadToHead("kitch", "brock");
 // console.log("\n");
-// logHeadToHead("dix", "brock");
+// logHeadToHead("ryan", "ant");
 
 logRecords(ALL_YEARS);
-// logRecords([2020,2021,2022], true);
+logRecords([2021, 2022, 2023], true);
 
 const getUserPlayers = (user) => {
   const ownerId = getSleeperId(user);
@@ -846,4 +846,4 @@ const getUserPlayers = (user) => {
   );
 };
 
-// getUserPlayers("htc");
+// getUserPlayers("rich");
