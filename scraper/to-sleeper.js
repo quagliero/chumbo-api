@@ -769,7 +769,7 @@ const logHeadToHead = (a, b) => {
       totals[b] = totals[b] + 1;
     } else {
       // draw
-      totals.tie = totals[tie] + 1;
+      totals.tie = totals.tie + 1;
     }
     console.log(
       `Matchup ${i + 1} (${r.year} week ${r.week}): ${
@@ -784,22 +784,31 @@ const logHeadToHead = (a, b) => {
       `ALL TIME H2H: ${a} ${totals[a]} - ${totals[b]} ${b} ${
         totals.tie ? `(${totals.tie} tie)` : ""
       }` +
-      "\n"
+      "\n" +
+      `Average score: ${a} ${(
+        results.reduce((acc, cur) => {
+          return acc + cur.teamA.matchup.points;
+        }, 0) / results.length
+      ).toFixed(2)} - ${(
+        results.reduce((acc, cur) => {
+          return acc + cur.teamB.matchup.points;
+        }, 0) / results.length
+      ).toFixed(2)} ${b}`
   );
   // console.table(resultsData);
 };
 
-// logHeadToHead("thd", "fin");
+// logHeadToHead("thd", "ant");
 // console.log("\n");
-// logHeadToHead("jay", "rich");
+// logHeadToHead("kitch", "rich");
 // console.log("\n");
-// logHeadToHead("hadkiss", "dix");
+// logHeadToHead("ryan", "dix");
 // console.log("\n");
-// logHeadToHead("htc", "sol");
+// logHeadToHead("htc", "brock");
 // console.log("\n");
-// logHeadToHead("kitch", "brock");
+// logHeadToHead("sol", "fin");
 // console.log("\n");
-// logHeadToHead("ryan", "ant");
+// logHeadToHead("hadkiss", "jay");
 
 logRecords(ALL_YEARS);
 logRecords([2021, 2022, 2023], true);
