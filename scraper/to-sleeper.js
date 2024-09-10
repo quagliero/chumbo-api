@@ -690,7 +690,7 @@ const getSleeperId = (name) =>
   managers.find((m) => m.id.toLowerCase() === name.toLowerCase()).sleeper.id;
 
 const ALL_YEARS = [
-  2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023,
+  2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024,
 ];
 
 const FOURTEEN_GAMES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
@@ -798,20 +798,20 @@ const logHeadToHead = (a, b) => {
   // console.table(resultsData);
 };
 
-// logHeadToHead("thd", "ant");
+// logHeadToHead("thd", "dix");
+// console.log("\n");
+// logHeadToHead("htc", "ryan");
+// console.log("\n");
+// logHeadToHead("jay", "brock");
+// console.log("\n");
+// logHeadToHead("ant", "fin");
+// console.log("\n");
+// logHeadToHead("hadkiss", "sol");
 // console.log("\n");
 // logHeadToHead("kitch", "rich");
-// console.log("\n");
-// logHeadToHead("ryan", "dix");
-// console.log("\n");
-// logHeadToHead("htc", "brock");
-// console.log("\n");
-// logHeadToHead("sol", "fin");
-// console.log("\n");
-// logHeadToHead("hadkiss", "jay");
 
 logRecords(ALL_YEARS);
-logRecords([2021, 2022, 2023], true);
+logRecords([2021, 2023, 2024], true);
 
 const getUserPlayers = (user) => {
   const ownerId = getSleeperId(user);
@@ -850,9 +850,14 @@ const getUserPlayers = (user) => {
     Object.fromEntries(
       Object.entries(starterCounts)
         .sort((a, b) => b[1] - a[1])
-        .slice(0, 20)
+        .slice(0, 3)
     )
   );
 };
 
-// getUserPlayers("rich");
+// managers.forEach((m) => {
+//   console.log("\n");
+//   console.log(m.teamName);
+//   getUserPlayers(m.name);
+//   console.log("====================");
+// });
