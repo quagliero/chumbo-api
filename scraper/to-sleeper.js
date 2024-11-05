@@ -28,7 +28,7 @@ const getUserByOwnerId = (year, ownerId) => {
 };
 
 const getUserByRosterId = (year, rosterId) =>
-  getUserByOwnerId(getOwnerByRosterId(year, rosterId)?.owner_id);
+  getUserByOwnerId(year, getOwnerByRosterId(year, rosterId)?.owner_id);
 
 const getRosterByOwnerId = (year, ownerId) => {
   const rosters = require(`../data/${year}/rosters.json`);
@@ -578,7 +578,12 @@ const logRecords = (years, tiers = false) => {
         trophies: x.trophies,
       });
     })
-    .sort((a, b) => b.perc - a.perc || b.wins - a.wins || b.fpts - a.fpts)
+    // tiers by points, otherwise by win percentage
+    .sort(
+      tiers
+        ? (a, b) => b.fpts - a.fpts
+        : (a, b) => b.perc - a.perc || b.wins - a.wins || b.fpts - a.fpts
+    )
     // wadlow not in the tiers
     .filter((x) => (tiers ? x.name !== "DontPanic22" : true));
 
@@ -634,30 +639,153 @@ const logRecords = (years, tiers = false) => {
 };
 
 const logWinnersBracket = (year) => {
-  const winnersBracket = require(`./data/${year}/winners_bracket.json`);
+  const winnersBracket = require(`../data/${year}/winners_bracket.json`);
+  // const matchups = require(`../data/${year}/matchups/17.json`);
 
   winnersBracket.forEach((m) => {
     if (m.t1_from?.w) {
       console.log(
-        `${getUserByRosterId(m.t1_from?.w)?.display_name} vs ${
-          getUserByRosterId(m.t2_from?.w)?.display_name
-        }`
+        `Round ${m.r} : ${
+          getUserByRosterId(year, m.t1_from?.w)?.display_name
+        } vs ${getUserByRosterId(year, m.t2_from?.w)?.display_name}`
       );
     } else if (m.t1_from?.l) {
       console.log(
-        `${getUserByRosterId(m.t1_from?.l)?.display_name} vs ${
-          getUserByRosterId(m.t2_from?.l)?.display_name
-        }`
+        `Round ${m.r} : ${
+          getUserByRosterId(year, m.t1_from?.l)?.display_name
+        } vs ${getUserByRosterId(year, m.t2_from?.l)?.display_name}`
       );
     } else {
       console.log(
-        `${getUserByRosterId(m.t1)?.display_name} vs ${
-          getUserByRosterId(m.t2)?.display_name
+        `Round ${m.r} : ${getUserByRosterId(year, m.t1)?.display_name} vs ${
+          getUserByRosterId(year, m.t2)?.display_name
         }`
       );
     }
   });
 };
+
+function logPlayoffWinLossRecord(years) {
+  // Initialize a record object to store wins, losses, and additional metrics for each user
+  const winLossRecord = {};
+
+  years.forEach((year) => {
+    try {
+      const playoffData = require(`../data/${year}/winners_bracket.json`);
+
+      // Track all users who participated in playoffs this year
+      const playoffParticipants = new Set();
+
+      playoffData.forEach((match) => {
+        // Skip consolation games by checking the 'p' field
+        if (match.p && match.p !== 1) {
+          return;
+        }
+
+        // Track winner and loser for this match
+        const winnerId = match.w;
+        const loserId = match.l;
+
+        // Retrieve user information
+        const winnerUserId = getUserByRosterId(year, winnerId).user_id;
+        const loserUserId = getUserByRosterId(year, loserId).user_id;
+        const winnerUser = managers.find(
+          (x) => x.sleeper.id === winnerUserId
+        ).teamName;
+        const loserUser = managers.find(
+          (x) => x.sleeper.id === loserUserId
+        ).teamName;
+
+        // Initialize win-loss records and arrays if not present
+        if (!winLossRecord[winnerUser]) {
+          winLossRecord[winnerUser] = {
+            wins: 0,
+            losses: 0,
+            appearances: [],
+            bowlAppearances: [],
+            bowlWins: [],
+            bowlLosses: [],
+          };
+        }
+        if (!winLossRecord[loserUser]) {
+          winLossRecord[loserUser] = {
+            wins: 0,
+            losses: 0,
+            appearances: [],
+            bowlAppearances: [],
+            bowlWins: [],
+            bowlLosses: [],
+          };
+        }
+
+        // Update wins and losses
+        winLossRecord[winnerUser].wins += 1;
+        winLossRecord[loserUser].losses += 1;
+
+        // Add year to playoff appearances if it's their first appearance this year
+        if (!winLossRecord[winnerUser].appearances.includes(year)) {
+          winLossRecord[winnerUser].appearances.push(year);
+        }
+        if (!winLossRecord[loserUser].appearances.includes(year)) {
+          winLossRecord[loserUser].appearances.push(year);
+        }
+
+        // Handle championship game (p: 1)
+        if (match.p === 1) {
+          // Update bowl appearances
+          if (!winLossRecord[winnerUser].bowlAppearances.includes(year)) {
+            winLossRecord[winnerUser].bowlAppearances.push(year);
+          }
+          if (!winLossRecord[loserUser].bowlAppearances.includes(year)) {
+            winLossRecord[loserUser].bowlAppearances.push(year);
+          }
+
+          // Update bowl wins and losses
+          winLossRecord[winnerUser].bowlWins.push(year);
+          winLossRecord[loserUser].bowlLosses.push(year);
+        }
+
+        // Track all playoff participants this year (for appearances)
+        playoffParticipants.add(winnerUser);
+        playoffParticipants.add(loserUser);
+      });
+
+      // Ensure every participant in playoffs this year has the year recorded in their appearances
+      playoffParticipants.forEach((user) => {
+        if (!winLossRecord[user].appearances.includes(year)) {
+          winLossRecord[user].appearances.push(year);
+        }
+      });
+    } catch (e) {
+      console.log(`Error processing year ${year}:`, e);
+    }
+  });
+
+  const t = new Table({ title: "Playoff Records" });
+
+  const tableData = Object.entries(winLossRecord)
+    .map(([user, record]) => {
+      return {
+        user,
+        wins: record.wins,
+        losses: record.losses,
+        winPerc: (record.wins / (record.wins + record.losses)).toFixed(2),
+        appearances: record.appearances.length,
+        finals: record.bowlAppearances.length,
+        result: `${record.bowlWins.map(() => `🏆`).join("")} ${record.bowlLosses
+          .map(() => `🥈`)
+          .join("")}`.trim(),
+      };
+    })
+    .sort(
+      (a, b) =>
+        b.wins / (b.wins + b.losses) - a.wins / (a.wins + a.losses) ||
+        b.wins - a.wins ||
+        b.appearances - a.appearances
+    );
+  t.addRows(tableData);
+  t.printTable();
+}
 
 const logWeeklyMatchups = (years, weeks) =>
   years.forEach((y) => {
@@ -798,20 +926,22 @@ const logHeadToHead = (a, b) => {
   // console.table(resultsData);
 };
 
-// logHeadToHead("thd", "dix");
+// logHeadToHead("thd", "sol");
 // console.log("\n");
-// logHeadToHead("htc", "ryan");
+// logHeadToHead("hadkiss", "dix");
 // console.log("\n");
-// logHeadToHead("jay", "brock");
+// logHeadToHead("jay", "kitch");
 // console.log("\n");
-// logHeadToHead("ant", "fin");
+// logHeadToHead("htc", "fin");
 // console.log("\n");
-// logHeadToHead("hadkiss", "sol");
+// logHeadToHead("ryan", "ant");
 // console.log("\n");
-// logHeadToHead("kitch", "rich");
+// logHeadToHead("brock", "rich");
 
-logRecords(ALL_YEARS);
-logRecords([2021, 2023, 2024], true);
+// logRecords(ALL_YEARS);
+// logRecords([2022, 2023, 2024], true);
+
+logPlayoffWinLossRecord(ALL_YEARS.slice(0, -1));
 
 const getUserPlayers = (user) => {
   const ownerId = getSleeperId(user);
@@ -850,7 +980,7 @@ const getUserPlayers = (user) => {
     Object.fromEntries(
       Object.entries(starterCounts)
         .sort((a, b) => b[1] - a[1])
-        .slice(0, 3)
+        .slice(0, 10)
     )
   );
 };

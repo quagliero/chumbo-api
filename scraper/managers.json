@@ -51,7 +51,7 @@
   {
     "id": "dix",
     "name": "dix",
-    "teamName": "SIIBON",
+    "teamName": "SIIIBON",
     "crowns": 3,
     "scoringCrowns": 6,
     "userId": ["2886224", "6557238", "14118531"],
@@ -76,7 +76,7 @@
   {
     "id": "jimmie",
     "name": "jimmie",
-    "teamName": "Jimbo\\'s Chiefs",
+    "teamName": "Jimbo's Chiefs",
     "active": false,
     "userId": ["576154"],
     "teamId": {
@@ -115,7 +115,7 @@
   {
     "id": "rich",
     "name": "rich",
-    "teamName": "Zaragoza\\'s Zooting Zorro",
+    "teamName": "Zaragoza's Zooting Zorro",
     "userId": ["3832177"],
     "teamId": "10",
     "sleeper": {
@@ -238,7 +238,7 @@
   {
     "id": "ryan",
     "name": "ryan",
-    "teamName": "Pimpin Ain\\'t Leesy",
+    "teamName": "Pimpin Ain't Leesy",
     "userId": ["19850746"],
     "crowns": 1,
     "teamId": {

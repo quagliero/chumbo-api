@@ -67,7 +67,7 @@ const managers = [
   {
     id: "dix",
     name: "dix",
-    teamName: "SIIBON",
+    teamName: "SIIIBON",
     crowns: 2,
     userId: ["2886224", "6557238", "14118531"],
     teamId: "5",
