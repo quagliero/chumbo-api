@@ -5,6 +5,8 @@
     "teamName": "King of Wishful Tinkering",
     "userId": ["2820383"],
     "teamId": "1",
+    "firstPlace": [2024],
+    "secondPlace": [2012, 2020],
     "scoringCrowns": 1,
     "sleeper": {
       "id": "77140390129844224",
@@ -15,8 +17,9 @@
     "id": "jay",
     "name": "jay",
     "teamName": "Kansas City Chumps",
-    "crowns": 2,
-    "scoringCrowns": 4,
+    "firstPlace": [2018, 2019],
+    "secondPlace": [2013],
+    "scoringCrowns": 5,
     "userId": ["2833865"],
     "teamId": "2",
     "sleeper": {
@@ -28,7 +31,8 @@
     "id": "hadkiss",
     "name": "hadkiss",
     "teamName": "Bush Johnson",
-    "crowns": 1,
+    "firstPlace": [2013],
+    "secondPlace": [2016],
     "userId": ["2839340"],
     "teamId": "3",
     "sleeper": {
@@ -40,7 +44,7 @@
     "id": "fin",
     "name": "fin",
     "teamName": "Tha Dollar",
-    "crowns": 1,
+    "firstPlace": [2016],
     "userId": ["2873481"],
     "teamId": "4",
     "sleeper": {
@@ -52,7 +56,8 @@
     "id": "dix",
     "name": "dix",
     "teamName": "SIIIBON",
-    "crowns": 3,
+    "firstPlace": [2012, 2017, 2022],
+    "secondPlace": [2021],
     "scoringCrowns": 6,
     "userId": ["2886224", "6557238", "14118531"],
     "teamId": "5",
@@ -65,7 +70,7 @@
     "id": "ant",
     "name": "ant",
     "teamName": "Wolverhampton Wasters",
-    "crowns": 2,
+    "firstPlace": [2015, 2021],
     "userId": ["2899570"],
     "teamId": "6",
     "sleeper": {
@@ -92,6 +97,7 @@
     "name": "kitch",
     "teamName": "The Roaches",
     "userId": ["1245126"],
+    "secondPlace": [2014],
     "teamId": "8",
     "sleeper": {
       "id": "77361676378587136",
@@ -117,6 +123,7 @@
     "name": "rich",
     "teamName": "Zaragoza's Zooting Zorro",
     "userId": ["3832177"],
+    "secondPlace": [2023, 2024],
     "teamId": "10",
     "sleeper": {
       "id": "337222928615612416",
@@ -145,6 +152,7 @@
     "name": "htc",
     "userId": ["5045797"],
     "teamName": "21st & Hine",
+    "secondPlace": [2015, 2022],
     "teamId": "9",
     "sleeper": {
       "id": "337226046606704640",
@@ -156,7 +164,8 @@
     "name": "sol",
     "userId": ["7344145"],
     "teamName": "The Unicorn",
-    "crowns": 1,
+    "firstPlace": [2014],
+    "secondPlace": [2018],
     "teamId": {
       "current": "7",
       "2014": "11",
@@ -225,7 +234,8 @@
       "2020": "11",
       "2021": "11"
     },
-    "crowns": 1,
+    "firstPlace": [2020],
+    "secondPlace": [2017, 2019],
     "scoringCrowns": 1,
     "weeks": {
       "2016": [10, 11, 12, 13, 14, 15, 16]
@@ -240,7 +250,7 @@
     "name": "ryan",
     "teamName": "Pimpin Ain't Leesy",
     "userId": ["19850746"],
-    "crowns": 1,
+    "firstPlace": [2023],
     "teamId": {
       "2019": "12",
       "current": 12

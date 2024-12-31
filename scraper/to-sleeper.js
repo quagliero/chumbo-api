@@ -542,10 +542,13 @@ const logRecords = (years, tiers = false) => {
             m.settings.fpts_against_decimal
           ),
           fpts_against_avg: null,
-          trophies: `${new Array(manager?.crowns || 0)
+          trophies: `${new Array(manager?.firstPlace?.length || 0)
             .fill(null)
             .map(() => "🏆")
-            .join("")} ${new Array(manager?.scoringCrowns || 0)
+            .join("")}${new Array(manager?.secondPlace?.length || 0)
+            .fill(null)
+            .map(() => "🥈")
+            .join("")}${new Array(manager?.scoringCrowns || 0)
             .fill(null)
             .map(() => "🎯")
             .join("")}`,
@@ -643,25 +646,46 @@ const logWinnersBracket = (year) => {
   // const matchups = require(`../data/${year}/matchups/17.json`);
 
   winnersBracket.forEach((m) => {
-    if (m.t1_from?.w) {
-      console.log(
-        `Round ${m.r} : ${
-          getUserByRosterId(year, m.t1_from?.w)?.display_name
-        } vs ${getUserByRosterId(year, m.t2_from?.w)?.display_name}`
-      );
-    } else if (m.t1_from?.l) {
-      console.log(
-        `Round ${m.r} : ${
-          getUserByRosterId(year, m.t1_from?.l)?.display_name
-        } vs ${getUserByRosterId(year, m.t2_from?.l)?.display_name}`
-      );
-    } else {
-      console.log(
-        `Round ${m.r} : ${getUserByRosterId(year, m.t1)?.display_name} vs ${
-          getUserByRosterId(year, m.t2)?.display_name
-        }`
-      );
+    // Skip consolation games by checking the 'p' field
+    if (m.p && m.p !== 1) {
+      return;
     }
+
+    // Track winner and loser for this match
+    const winnerId = m.w;
+    const loserId = m.l;
+
+    // Retrieve user information
+    const winnerUserId = getUserByRosterId(year, winnerId).user_id;
+    const loserUserId = getUserByRosterId(year, loserId).user_id;
+    const winnerUser = managers.find(
+      (x) => x.sleeper.id === winnerUserId
+    ).teamName;
+    const loserUser = managers.find(
+      (x) => x.sleeper.id === loserUserId
+    ).teamName;
+
+    console.log(`Round ${m.r} : ${winnerUser} vs ${loserUser}`);
+
+    // if (m.t1_from?.w) {
+    //   console.log(
+    //     `Round ${m.r} : ${
+    //       getUserByRosterId(year, m.t1_from?.w)?.display_name
+    //     } vs ${getUserByRosterId(year, m.t2_from?.w)?.display_name}`
+    //   );
+    // } else if (m.t1_from?.l) {
+    //   console.log(
+    //     `Round ${m.r} : ${
+    //       getUserByRosterId(year, m.t1_from?.l)?.display_name
+    //     } vs ${getUserByRosterId(year, m.t2_from?.l)?.display_name}`
+    //   );
+    // } else {
+    //   console.log(
+    //     `Round ${m.r} : ${getUserByRosterId(year, m.t1)?.display_name} vs ${
+    //       getUserByRosterId(year, m.t2)?.display_name
+    //     }`
+    //   );
+    // }
   });
 };
 
@@ -687,8 +711,11 @@ function logPlayoffWinLossRecord(years) {
         const loserId = match.l;
 
         // Retrieve user information
-        const winnerUserId = getUserByRosterId(year, winnerId).user_id;
-        const loserUserId = getUserByRosterId(year, loserId).user_id;
+        const winnerUserId = getUserByRosterId(year, winnerId)?.user_id;
+        const loserUserId = getUserByRosterId(year, loserId)?.user_id;
+
+        if (!winnerUserId || !loserUserId) return;
+
         const winnerUser = managers.find(
           (x) => x.sleeper.id === winnerUserId
         ).teamName;
@@ -777,12 +804,7 @@ function logPlayoffWinLossRecord(years) {
           .join("")}`.trim(),
       };
     })
-    .sort(
-      (a, b) =>
-        b.wins / (b.wins + b.losses) - a.wins / (a.wins + a.losses) ||
-        b.wins - a.wins ||
-        b.appearances - a.appearances
-    );
+    .sort((a, b) => b.wins - a.wins || b.appearances - a.appearances);
   t.addRows(tableData);
   t.printTable();
 }
@@ -923,25 +945,206 @@ const logHeadToHead = (a, b) => {
         }, 0) / results.length
       ).toFixed(2)} ${b}`
   );
+
   // console.table(resultsData);
 };
 
-// logHeadToHead("thd", "sol");
+// logHeadToHead("thd", "jay");
 // console.log("\n");
-// logHeadToHead("hadkiss", "dix");
+// logHeadToHead("sol", "ryan");
 // console.log("\n");
-// logHeadToHead("jay", "kitch");
+// logHeadToHead("ant", "brock");
 // console.log("\n");
-// logHeadToHead("htc", "fin");
+// logHeadToHead("jay", "fin");
 // console.log("\n");
-// logHeadToHead("ryan", "ant");
+// logHeadToHead("sol", "rich");
 // console.log("\n");
-// logHeadToHead("brock", "rich");
+// logHeadToHead("hadkiss", "kitch");
 
-// logRecords(ALL_YEARS);
+logRecords(ALL_YEARS);
 // logRecords([2022, 2023, 2024], true);
 
-logPlayoffWinLossRecord(ALL_YEARS.slice(0, -1));
+logPlayoffWinLossRecord(ALL_YEARS);
+
+const logScoringBuckets = () =>
+  managers.forEach((m) => {
+    const x = [];
+
+    ALL_YEARS.forEach((y) => {
+      const weeks = y <= 2013 || y >= 2021 ? FOURTEEN_GAMES : THIRTEEN_GAMES;
+
+      weeks.forEach((w) => {
+        try {
+          const matchups = require(`../data/${y}/matchups/${w}.json`);
+          const rosterId = getRosterByOwnerId(y, m.sleeper.id).roster_id;
+          const matchup = matchups.find(
+            (match) =>
+              match.user_id === m.sleeper.id || match.roster_id === rosterId
+          );
+          x.push(matchup.points);
+        } catch (e) {
+          // console.log(y, w);
+        }
+      });
+    });
+
+    x.sort((a, b) => a - b);
+
+    // log out the mean, median, and range
+    const total = x.reduce((acc, cur) => acc + cur, 0);
+    const mean = x.reduce((acc, cur) => acc + cur, 0) / x.length;
+    const median = x[Math.floor(x.length / 2)];
+
+    // log out how many times they scored below 50, 50-60, 60-70, 70-80, 80-90, 90-100, 100-110, 110-120, 120+
+    const buckets = {
+      ["<50"]: 0,
+      ["50-60"]: 0,
+      ["60-70"]: 0,
+      ["70-80"]: 0,
+      ["80-90"]: 0,
+      ["90-100"]: 0,
+      ["100-110"]: 0,
+      ["110-120"]: 0,
+      ["120-130"]: 0,
+      ["130-140"]: 0,
+      ["140-150"]: 0,
+      ["150+"]: 0,
+    };
+
+    x.forEach((score) => {
+      if (score < 50) {
+        buckets["<50"] = buckets["<50"] + 1;
+      } else if (score < 60) {
+        buckets["50-60"] = buckets["50-60"] + 1;
+      } else if (score < 70) {
+        buckets["60-70"] = buckets["60-70"] + 1;
+      } else if (score < 80) {
+        buckets["70-80"] = buckets["70-80"] + 1;
+      } else if (score < 90) {
+        buckets["80-90"] = buckets["80-90"] + 1;
+      } else if (score < 100) {
+        buckets["90-100"] = buckets["90-100"] + 1;
+      } else if (score < 110) {
+        buckets["100-110"] = buckets["100-110"] + 1;
+      } else if (score < 120) {
+        buckets["110-120"] = buckets["110-120"] + 1;
+      } else if (score < 130) {
+        buckets["120-130"] = buckets["120-130"] + 1;
+      } else if (score < 140) {
+        buckets["130-140"] = buckets["130-140"] + 1;
+      } else if (score < 150) {
+        buckets["140-150"] = buckets["140-150"] + 1;
+      } else {
+        buckets["150+"] = buckets["150+"] + 1;
+      }
+    });
+
+    console.log({
+      manager: m.teamName,
+      total,
+      mean,
+      median,
+      buckets,
+      ["100s"]: x.filter((s) => s >= 100).length,
+    });
+  });
+
+const logScoringRanksByYear = () => {
+  const years = ALL_YEARS;
+  const data = {};
+
+  years.forEach((y) => {
+    const rosters = require(`../data/${y}/rosters.json`);
+
+    const sortedRosters = rosters.sort((a, b) => {
+      return b.settings.fpts - a.settings.fpts;
+    });
+
+    sortedRosters.forEach((r, i) => {
+      const x = {
+        rank: i + 1,
+        owner_id: r.owner_id,
+        name: getUserByOwnerId(y, r.owner_id).display_name,
+        fpts: formatNumber(r.settings.fpts, r.settings.fpts_decimal),
+      };
+
+      if (!data[x.name]) {
+        data[x.name] = [x.rank];
+      } else {
+        data[x.name] = [...data[x.name], x.rank];
+      }
+    });
+  });
+
+  console.log(data);
+};
+
+// logScoringRanksByYear();
+
+const logBreakdown = (years = ALL_YEARS) => {
+  const data = {};
+
+  years.forEach((y) => {
+    const weeks = y <= 2013 || y >= 2021 ? FOURTEEN_GAMES : THIRTEEN_GAMES;
+
+    weeks.forEach((week) => {
+      try {
+        const matchups = require(`../data/${y}/matchups/${week}.json`);
+
+        // go through each matchup for the week and see how many games they would have won or lost that week against every other team
+        matchups.forEach((m) => {
+          const user = getUserByRosterId(y, m.roster_id);
+
+          const points = formatNumber(m.points, m.points_decimal);
+
+          if (!data[user.user_id]) {
+            data[user.user_id] = {
+              wins: 0,
+              losses: 0,
+              ties: 0,
+            };
+          }
+
+          matchups.forEach((o) => {
+            if (m.roster_id === o.roster_id) {
+              return;
+            }
+            const opponentPoints = formatNumber(o.points, o.points_decimal);
+
+            if (points > opponentPoints) {
+              data[user.user_id].wins = data[user.user_id].wins + 1;
+            } else if (points === opponentPoints) {
+              data[user.user_id].ties = data[user.user_id].ties + 1;
+            } else {
+              data[user.user_id].losses = data[user.user_id].losses + 1;
+            }
+          });
+        });
+      } catch (e) {}
+    });
+  });
+
+  const t = new Table({ title: "All-Time Breakdown" });
+  t.addRows(
+    Object.entries(data)
+      .map(([name, record]) => {
+        return {
+          name: managers.find((m) => m.sleeper.id === name).teamName,
+          wins: record.wins,
+          losses: record.losses,
+          ties: record.ties,
+          winPerc: (
+            (record.wins / (record.wins + record.losses + record.ties)) *
+            100
+          ).toFixed(2),
+        };
+      })
+      .sort((a, b) => b.winPerc - a.winPerc)
+  );
+  t.printTable();
+};
+
+// logBreakdown(ALL_YEARS);
 
 const getUserPlayers = (user) => {
   const ownerId = getSleeperId(user);
@@ -980,7 +1183,7 @@ const getUserPlayers = (user) => {
     Object.fromEntries(
       Object.entries(starterCounts)
         .sort((a, b) => b[1] - a[1])
-        .slice(0, 10)
+        .slice(0, 15)
     )
   );
 };
