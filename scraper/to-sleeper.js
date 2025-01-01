@@ -665,29 +665,32 @@ const logWinnersBracket = (year) => {
       (x) => x.sleeper.id === loserUserId
     ).teamName;
 
-    console.log(`Round ${m.r} : ${winnerUser} vs ${loserUser}`);
+    const week = require(`../data/${year}/matchups/${
+      (year === 2012 || year >= 2021 ? 14 : 13) + m.r
+    }.json`);
 
-    // if (m.t1_from?.w) {
-    //   console.log(
-    //     `Round ${m.r} : ${
-    //       getUserByRosterId(year, m.t1_from?.w)?.display_name
-    //     } vs ${getUserByRosterId(year, m.t2_from?.w)?.display_name}`
-    //   );
-    // } else if (m.t1_from?.l) {
-    //   console.log(
-    //     `Round ${m.r} : ${
-    //       getUserByRosterId(year, m.t1_from?.l)?.display_name
-    //     } vs ${getUserByRosterId(year, m.t2_from?.l)?.display_name}`
-    //   );
-    // } else {
-    //   console.log(
-    //     `Round ${m.r} : ${getUserByRosterId(year, m.t1)?.display_name} vs ${
-    //       getUserByRosterId(year, m.t2)?.display_name
-    //     }`
-    //   );
-    // }
+    const matchupWinner = week.find((x) => x.roster_id === winnerId);
+    const matchupLoser = week.find((x) => x.roster_id === loserId);
+
+    let round;
+
+    if (m.p === 1) {
+      round = "Championship";
+    } else if (year === 2012 && m.r === 1) {
+      round = "Semi-Final";
+    } else if (m.r === 1) {
+      round = "Quarter-Final";
+    } else {
+      round = "Semi-Final";
+    }
+
+    console.log(
+      `${round} : ${winnerUser} ${matchupWinner.points} vs ${matchupLoser.points} ${loserUser}`
+    );
   });
 };
+
+logWinnersBracket(2024);
 
 function logPlayoffWinLossRecord(years) {
   // Initialize a record object to store wins, losses, and additional metrics for each user
@@ -961,10 +964,10 @@ const logHeadToHead = (a, b) => {
 // console.log("\n");
 // logHeadToHead("hadkiss", "kitch");
 
-logRecords(ALL_YEARS);
+// logRecords(ALL_YEARS);
 // logRecords([2022, 2023, 2024], true);
 
-logPlayoffWinLossRecord(ALL_YEARS);
+// logPlayoffWinLossRecord(ALL_YEARS);
 
 const logScoringBuckets = () =>
   managers.forEach((m) => {
