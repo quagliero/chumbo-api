@@ -964,7 +964,7 @@ const logHeadToHead = (a, b) => {
 // console.log("\n");
 // logHeadToHead("hadkiss", "kitch");
 
-// logRecords(ALL_YEARS);
+logRecords(ALL_YEARS);
 // logRecords([2022, 2023, 2024], true);
 
 // logPlayoffWinLossRecord(ALL_YEARS);
