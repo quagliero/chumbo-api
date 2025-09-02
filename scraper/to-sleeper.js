@@ -600,7 +600,7 @@ const logRecords = (years, tiers = false) => {
 
   const t = new Table({
     title: tiers
-      ? `Chumbo Tiers for ${years.join(", ")}`
+      ? `Chumbo Points Tiers for ${years.join(", ")}`
       : "Chumbo All-Time Records",
   });
   if (tiers) {
@@ -689,8 +689,6 @@ const logWinnersBracket = (year) => {
     );
   });
 };
-
-logWinnersBracket(2024);
 
 function logPlayoffWinLossRecord(years) {
   // Initialize a record object to store wins, losses, and additional metrics for each user
@@ -843,7 +841,7 @@ const getSleeperId = (name) =>
   managers.find((m) => m.id.toLowerCase() === name.toLowerCase()).sleeper.id;
 
 const ALL_YEARS = [
-  2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024,
+  2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025
 ];
 
 const FOURTEEN_GAMES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
@@ -952,20 +950,20 @@ const logHeadToHead = (a, b) => {
   // console.table(resultsData);
 };
 
-// logHeadToHead("thd", "jay");
-// console.log("\n");
-// logHeadToHead("sol", "ryan");
-// console.log("\n");
-// logHeadToHead("ant", "brock");
-// console.log("\n");
-// logHeadToHead("jay", "fin");
-// console.log("\n");
-// logHeadToHead("sol", "rich");
-// console.log("\n");
-// logHeadToHead("hadkiss", "kitch");
+logHeadToHead("thd", "brock");
+console.log("\n");
+logHeadToHead("htc", "kitch");
+console.log("\n");
+logHeadToHead("dix", "rich");
+console.log("\n");
+logHeadToHead("hadkiss", "sol");
+console.log("\n");
+logHeadToHead("ant", "fin");
+console.log("\n");
+logHeadToHead("jay", "ryan");
 
 logRecords(ALL_YEARS);
-// logRecords([2022, 2023, 2024], true);
+logRecords([2023, 2024], true);
 
 // logPlayoffWinLossRecord(ALL_YEARS);
 
